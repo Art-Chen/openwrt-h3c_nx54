@@ -50,3 +50,20 @@ define Device/linksys_spnmx56
 					ipq-wifi-linksys_spnmx56
 endef
 TARGET_DEVICES += linksys_spnmx56
+
+define Device/h3c_nx54
+	$(call Device/FitImageLzma)
+	$(call Device/UbiFit)
+	SOC := ipq5018
+	DEVICE_VENDOR := H3C
+	DEVICE_MODEL := NX54
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	KERNEL_SIZE := 8192k
+	IMAGE_SIZE := 46336k
+	DEVICE_DTS_CONFIG := config@mp03.1
+	DEVICE_PACKAGES := \
+		ath11k-firmware-qcn9074 \
+		ipq-wifi-h3c_nx54
+endef
+TARGET_DEVICES += h3c_nx54
