@@ -63,6 +63,7 @@ define Device/h3c_nx54
 	IMAGE_SIZE := 46336k
 	DEVICE_DTS_CONFIG := config@mp03.1
 	DEVICE_PACKAGES := \
+		kmod-ath11k-pci \
 		ath11k-firmware-qcn9074 \
 		ipq-wifi-h3c_nx54
 endef
