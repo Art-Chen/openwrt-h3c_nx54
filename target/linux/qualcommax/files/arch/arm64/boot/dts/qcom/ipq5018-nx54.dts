@@ -19,10 +19,10 @@
 		ethernet0 = &dp1;
 		ethernet1 = &dp2;
 
-		// led-boot = &led_system_blue;
-		// led-failsafe = &led_system_yellow;
-		led-running = &led_wan_green;
-		// led-upgrade = &led_system_yellow;
+		led-boot = &led_system_green;
+		led-failsafe = &led_system_red;
+		led-running = &led_system_green;
+		led-upgrade = &led_system_red;
 	};
 
 	chosen {
@@ -36,6 +36,14 @@
 		compatible = "gpio-keys";
 		pinctrl-0 = <&button_pins>;
 		pinctrl-names = "default";
+
+		button_reset {
+			label = "reset";
+			gpios = <&tlmm 38 GPIO_ACTIVE_LOW>;
+			linux,input-type = <EV_KEY>;
+			linux,code = <KEY_RESTART>;
+			debounce-interval = <60>;
+		};
 
 		button_mesh {
 			label = "mesh";
@@ -338,36 +346,29 @@
 			bias-pull-down;
 		};
 
-		// led_system_blue {
-		// 	pins = "gpio19";
-		// 	function = "gpio";
-		// 	drive-strength = <8>;
-		// 	bias-pull-down;
-		// };
+		led_system_red {
+			pins = "gpio23";
+			function = "gpio";
+			drive-strength = <8>;
+			bias-pull-down;
+		};
 
-		// led_system_yellow {
-		// 	pins = "gpio17";
-		// 	function = "gpio";
-		// 	drive-strength = <8>;
-		// 	bias-pull-down;
-		// };
-
-		// led_internet_blue {
-		// 	pins = "gpio22";
-		// 	function = "gpio";
-		// 	drive-strength = <8>;
-		// 	bias-pull-down;
-		// };
-
-		// led_internet_yellow {
-		// 	pins = "gpio20";
-		// 	function = "gpio";
-		// 	drive-strength = <8>;
-		// 	bias-pull-down;
-		// };
+		led_system_green {
+			pins = "gpio24";
+			function = "gpio";
+			drive-strength = <8>;
+			bias-pull-down;
+		};
 	};
 
 	button_pins: button_pins {
+		button_reset {
+			pins = "gpio38";
+			function = "gpio";
+			drive-strength = <8>;
+			bias-pull-up;
+		};
+
 		button_mesh {
 			pins = "gpio27";
 			function = "gpio";
@@ -392,32 +393,23 @@
 		compatible = "gpio-leds";
 		pinctrl-0 = <&leds_pins>;
 		pinctrl-names = "default";
+		
 
 		led_wan_green: led_wan_green {
-			label = "green:wan";
+			function = LED_FUNCTION_WAN;
+			color = <LED_COLOR_ID_GREEN>;
 			gpio = <&tlmm 46 GPIO_ACTIVE_HIGH>;
 		};
 
-		// led_system_blue: led_system_blue {
-		// 	label = "blue:system";
-		// 	gpio = <&tlmm 19 GPIO_ACTIVE_HIGH>;
-		// 	default-state = "on";
-		// };
+		led_system_red: led_system_red {
+			label = "red:system";
+			gpio = <&tlmm 23 GPIO_ACTIVE_HIGH>;
+		};
 
-		// led_system_yellow: led_system_yellow {
-		// 	label = "yellow:system";
-		// 	gpio = <&tlmm 17 GPIO_ACTIVE_HIGH>;
-		// };
-
-		// led_internet_blue: led_internet_blue {
-		// 	label = "blue:internet";
-		// 	gpio = <&tlmm 22 GPIO_ACTIVE_HIGH>;
-		// };
-
-		// led_internet_yellow: led_internet_yellow {
-		// 	label = "yellow:internet";
-		// 	gpio = <&tlmm 20 GPIO_ACTIVE_HIGH>;
-		// };
+		led_system_green: led_system_green {
+			label = "green:system";
+			gpio = <&tlmm 24 GPIO_ACTIVE_HIGH>;
+		};
 	};
 };
 
