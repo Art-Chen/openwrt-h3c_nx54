@@ -37,11 +37,11 @@
 		pinctrl-0 = <&button_pins>;
 		pinctrl-names = "default";
 
-		button_reset {
-			label = "reset";
+		button_mesh {
+			label = "mesh";
 			gpios = <&tlmm 27 GPIO_ACTIVE_LOW>;
 			linux,input-type = <EV_KEY>;
-			linux,code = <KEY_RESTART>;
+			linux,code = <BTN_9>;
 			debounce-interval = <60>;
 		};
 	};
@@ -76,12 +76,11 @@
 	switch_mac_mode = <MAC_MODE_SGMII_CHANNEL0>;
 
 	qcom,port_phyinfo {
-		// MAC0 -> GE Phy -> QCA8337 Phy4
+		// MAC0 -> GE Phy -> WAN
 		port@0 {
 			port_id = <1>;
 			mdiobus = <&mdio0>;
 			phy_address = <7>;
-			// status = "disabled";
 		};
 
 		// MAC1 ---SGMII---> QCA8337 SerDes
@@ -93,33 +92,18 @@
 	};
 };
 
-// MAC0 -> GE Phy
+// MAC0 -> GE Phy -> WAN
 &dp1 {
-	/*
-	 * ===============================================================
-	 *     _______________________         _______________________
-	 *    |        IPQ5018        |       |        QCA8337        |
-	 *    | +------+   +--------+ |       | +--------+   +------+ |
-	 *    | | MAC0 |---| GE Phy |-+--UTP--+-|  Phy4  |---| MAC5 | |
-	 *    | +------+   +--------+ |       | +--------+   +------+ |
-	 *    | +------+   +--------+ |       | +--------+   +------+ |
-	 *    | | MAC1 |---| Uniphy |-+-SGMII-+-| SerDes |---| MAC0 | |
-	 *    | +------+   +--------+ |       | +--------+   +------+ |
-	 *    |_______________________|       |_______________________|
-	 *
-	 * ===============================================================
-	 *
-	 * Current drivers don't support such topology. So dp1 and ge_phy
-	 * are useless. But they can't be disabled dut to qca-ssdk use
-	 * ge_phy to detect IPQ5018 dummy switch.
-	 */
+	// For NX54, The GE Phy was direct to WAN
 	status = "okay";
+	label = "wan";
 };
 
 // MAC1 ---SGMII---> QCA8337 SerDes
 &dp2 {
 	status = "okay";
 	phy-mode = "sgmii";
+	label = "switch";
 
 	fixed-link {
 		speed = <1000>;
@@ -131,7 +115,7 @@
 	status = "okay";
 };
 
-// IPQ5018 GE Phy -> QCA8337 Phy1
+// IPQ5018 GE Phy -> WAN
 &ge_phy {
 	status = "okay";
 };
@@ -143,12 +127,12 @@
 	pinctrl-names = "default";
 	reset-gpios = <&tlmm 39 GPIO_ACTIVE_LOW>;
 
-	// QCA8337 Phy0 -> IPQ5018 GE Phy
+	// QCA8337 Phy0 -> Stub
 	qca8337_0: ethernet-phy@0 {
 		reg = <0>;
 	};
 
-	// QCA8337 Phy1 -> WAN
+	// QCA8337 Phy1 -> LAN3
 	qca8337_1: ethernet-phy@1 {
 		reg = <1>;
 	};
@@ -163,7 +147,7 @@
 		reg = <3>;
 	};
 
-	// QCA8337 Phy4 -> LAN3
+	// QCA8337 Phy4 -> Stub
 	qca8337_4: ethernet-phy@4 {
 		reg = <4>;
 	};
@@ -181,14 +165,14 @@
 
 			port@1 {
 				reg = <1>;
-				label = "cpu1";
+				label = "stub0";
 				phy-handle = <&qca8337_0>;
 				status = "disabled";
 			};
 
 			port@2 {
 				reg = <2>;
-				label = "wan";
+				label = "lan3";
 				phy-handle = <&qca8337_1>;
 			};
 
@@ -206,8 +190,10 @@
 
 			port@5 {
 				reg = <5>;
-				label = "lan3";
+				label = "stub1";
 				phy-handle = <&qca8337_4>;
+				status = "disabled";
+
 			};
 
 			port@6 {
@@ -382,7 +368,7 @@
 	};
 
 	button_pins: button_pins {
-		button_reset {
+		button_mesh {
 			pins = "gpio27";
 			function = "gpio";
 			drive-strength = <8>;
