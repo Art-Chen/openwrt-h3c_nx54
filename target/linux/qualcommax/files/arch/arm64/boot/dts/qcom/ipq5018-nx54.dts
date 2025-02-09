@@ -414,11 +414,11 @@
 };
 
 
-&pcie_x2phy {
+&pcie0_phy {
 	status = "okay";
 };
 
-&pcie_x2 {
+&pcie0 {
 	status = "okay";
 
 	perst-gpios = <&tlmm 15 GPIO_ACTIVE_LOW>;
@@ -447,7 +447,7 @@
 	memory-region = <&q6_mem_regions>;
 	firmware-name = "ath11k/IPQ5018/hw1.0/q6_fw.mdt",
 					"ath11k/IPQ5018/hw1.0/m3_fw.mdt";
-	
+
 	// IPQ5018
 	q6_wcss_pd1: pd-1 {
 		firmware-name = "ath11k/IPQ5018/hw1.0/q6_fw.mdt";
@@ -489,7 +489,6 @@
 			"shutdown",
 			"stop",
 			"spawn";
-
 		status = "okay";
 	};
 };
